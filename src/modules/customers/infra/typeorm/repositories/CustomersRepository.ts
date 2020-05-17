@@ -2,6 +2,7 @@ import { getRepository, Repository } from 'typeorm';
 
 import ICustomersRepository from '@modules/customers/repositories/ICustomersRepository';
 import ICreateCustomerDTO from '@modules/customers/dtos/ICreateCustomerDTO';
+import AppError from '@shared/errors/AppError';
 import Customer from '../entities/Customer';
 
 class CustomersRepository implements ICustomersRepository {
@@ -22,8 +23,12 @@ class CustomersRepository implements ICustomersRepository {
     return customer;
   }
 
-  public async findById(id: string): Promise<Customer | undefined> {
+  public async findById(id: string): Promise<Customer> {
     const findCustomer = await this.ormRepository.findOne(id);
+
+    if (!findCustomer) {
+      throw new AppError('Cliente não econtrado!');
+    }
 
     return findCustomer;
   }
